@@ -1,5 +1,7 @@
 (*--------------------------------------------------------------------------
- * Functions in this version 2 have been modified from version 1 so that
+ * In version 3 the function generate_problem_file has been added.
+ *
+ * Functions in version 2 have been modified from version 1 so that
  * printing is separated from the solve functions.
  *
  * Andrew Palm
