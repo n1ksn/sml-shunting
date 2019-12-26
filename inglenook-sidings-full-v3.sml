@@ -126,9 +126,9 @@ fun print_int_list (l:int list) =
 fun print_state ((t0, t1, t2, t3):state) =
   (
     print "(";
-    print_int_list(t0); print ", ";
-    print_int_list(t1); print ", ";
-    print_int_list(t2); print ", ";
+    print_int_list(t0); print ",";
+    print_int_list(t1); print ",";
+    print_int_list(t2); print ",";
     print_int_list(t3);
     print ")\n"
   );
@@ -143,7 +143,8 @@ fun print_state_list ([]) = ()
 fun print_solution solution =
   (
     print "Moves: "; print (Int.toString((length solution)-1));
-    print "\nSolution:\n"; print_state_list solution
+    print "\nSolution:\n"; print_state_list solution;
+    print "\n"
   );
 
 (*------------------------------------------------------------------------*)
@@ -289,12 +290,12 @@ fun d1t3 ((t0, t1, t2, t3):state):state =
 (*------------------------------------------------------------------------*)
 fun next_states state =
   remove_if((fn x => (x=empty_state)),
-              [p1t1 state, p1t2 state, p1t3 state,
-               d1t1 state, d1t2 state, d1t3 state,
+              [p3t1 state, p3t2 state, p3t3 state,
+               d3t1 state, d3t2 state, d3t3 state,
                p2t1 state, p2t2 state, p2t3 state,
                d2t1 state, d2t2 state, d2t3 state,
-               p3t1 state, p3t2 state, p3t3 state,
-               d3t1 state, d3t2 state, d3t3 state]);
+               p1t1 state, p1t2 state, p1t3 state,
+               d1t1 state, d1t2 state, d1t3 state]);
 
 (* Return list of paths which extend path by a legal move, provided
    the result does not exceed limit in length and does not visit a state
@@ -361,6 +362,16 @@ fun print_solution_file (out_str, solution) =
   );
 
 (*------------------------------------------------------------------------*)
+fun solve_pure (start:state, finish:state) =
+  (* Find a solution that is a minimal solutions from the start
+     to the finish state *)
+  let
+    val fgoal = (fn x:state => (x = finish));
+    val sol = iddfs(start, fgoal, 25);
+  in
+    sol 
+  end;
+
 fun solve (start:state, finish:state) =
   (* Find a solution that is join of two minimal solutions from the start
      to an intermediate state and from the intermediate state to the
