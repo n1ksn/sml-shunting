@@ -973,7 +973,7 @@ fun solve_pure (iostart:iostate, iofinish:iostate):iostate list =
     val fgoal = (fn x:state => (x = finish));
     val sol = iddfs(start, fgoal, 25);
   in
-    map (state_to_iostate) (sol) 
+    map (state_to_iostate) (sol)
   end;
 
 fun solve (iostart:iostate, iofinish:iostate):iostate list =
@@ -1090,6 +1090,7 @@ fun read_permutations (in_file, out_file) =
 
 (*------------------------------------------------------------------------*)
 (* For compilation of stand-alone *)
+(*
 fun main () =
   let
     val args = CommandLine.arguments ();
@@ -1099,6 +1100,10 @@ fun main () =
     else
       generate_problem(1)
   end;
+*)
+
+fun main () =
+  read_permutations("perms.txt", "num-moves.txt");
 
 (* For mlton
 main ();
