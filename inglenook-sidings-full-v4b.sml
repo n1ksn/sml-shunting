@@ -1104,7 +1104,8 @@ fun main () =
 
 fun main () =
   read_permutations("perms.txt", "num-moves.txt");
-
-(* For mlton
-main ();
+(*
+  For mlton
 *)
+main ();
+
