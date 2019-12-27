@@ -281,12 +281,8 @@ fun print_iostate ((t0, t1, t2, t3):iostate) =
     print ")\n"
   );
 
-fun print_iostate_list ([]) = ()
-  | print_iostate_list (ios:iostate list) =
-    (
-      print_iostate (hd(ios));
-      print_iostate_list (tl(ios))
-    );
+fun print_iostate_list (ios:iostate list) =
+  app (print_iostate) ios;
 
 fun print_solution (solution:iostate list) =
   (
