@@ -1,7 +1,7 @@
 (*--------------------------------------------------------------------------
  * Version 4b is the same as version 4 except for added functions which
  * read permutations of [1,2,3,4,5,6,7,8] from a file and print the
- * number of moves in a solution in another file.
+ * number of moves in a solution in another file.  
  *
  * In version 4 the internal representation of puzzle states has been
  * changed to a single 64-bit word.  The previous state data structure
@@ -1104,8 +1104,7 @@ fun main () =
 
 fun main () =
   read_permutations("perms.txt", "num-moves.txt");
-(*
-  For mlton
-*)
-main ();
 
+(* For mlton
+main ();
+*)
