@@ -592,6 +592,7 @@ fun print_solution (solution:iostate list) =
   );
 
 (*------------------------------------------------------------------------*)
+(* Functions to find the number of cars on a track (in a state) *)
 fun ncars_w0 (s:state):int =
   let
     val pos1w0 = Word64.andb(s, pos1w0mask);
@@ -1172,6 +1173,8 @@ fun d3t3 (s:state):state =
 
 (*------------------------------------------------------------------------*)
 fun next_states state =
+  (* Return a list of sucessors to state, that is states that can be
+     reached from the given state by a legal move *)
   remove_if((fn x => (x=zeroword)),
               [p3t1 state, p3t2 state, p3t3 state,
                d3t1 state, d3t2 state, d3t3 state,
@@ -1180,18 +1183,18 @@ fun next_states state =
                p1t1 state, p1t2 state, p1t3 state,
                d1t1 state, d1t2 state, d1t3 state]);
 
-(* Return list of paths which extend path by a legal move, provided
-   the result does not exceed limit in length and does not visit a state
-   already in the path (to avoid cycles) *)
 fun limited_extend (path, limit) =
+  (* Return list of paths which extend path by a legal move, provided
+     the result does not exceed limit in length and does not visit a state
+     already in the path (to avoid cycles) *)
   if (length path) < limit then
     map (fn new_state => new_state::path)
           (remove_if ((fn x => member(x, path)), (next_states (hd path))))
   else
     [];
 
-(* Find path from start to finish state that is no longer than limit *)
 fun ldfs1 (start, goal:(state -> bool), [], limit) = []
+  (* Helper function for ldfs *)
   | ldfs1 (start, goal:(state -> bool), queue, limit) =
       if goal(hd (hd queue)) then
         rev (hd queue)
@@ -1200,12 +1203,13 @@ fun ldfs1 (start, goal:(state -> bool), [], limit) = []
                 (limited_extend ((hd queue), limit)) @ (tl queue), limit);
 
 fun ldfs (start, goal:(state -> bool), limit) =
+  (* Find path from start to finish state that is no longer than limit *)
   ldfs1(start, goal:(state -> bool), [[start]], limit);
 
-(* Make series of limited depth first searches, increasing the limit
-   on path length until a solution is found - iterative deepening
-   depth-first search *)
 fun iddfs (start, goal:(state -> bool), max_limit) =
+  (* Make series of limited depth first searches, increasing the limit
+     on path length until a solution is found.  This is an iterative
+     deepening depth-first search *)
   let
     val sol = ref [] and n = ref 0
   in
@@ -1217,6 +1221,7 @@ fun iddfs (start, goal:(state -> bool), max_limit) =
   end;
 
 (*------------------------------------------------------------------------*)
+(* Functions for writing solutions to a file *)
 fun print_int_list_file (out_str, l:int list) =
   TextIO.output (out_str, int_list_to_string l);
 
@@ -1255,14 +1260,12 @@ fun print_moves_file (out_str, solution:iostate list) =
   );
 
 (*------------------------------------------------------------------------*)
-val last3mask = pos3w1mask + pos4w1mask + pos5w1mask;
-
-fun last3t1 (s:state):Word64.word =
-  Word64.andb(s, last3mask);
+(* Functions to solve the puzzle given a start and finish state *)
 
 fun solve_pure (iostart:iostate, iofinish:iostate):iostate list =
   (* Find a solution that is a minimal solution from the start
-     to the finish state *)
+     to the finish state.  This can run a long time if the solution
+     is over about 12 moves.  Use with caution. *)
   let
     val finish = iostate_to_state(iofinish);
     val start = iostate_to_state(iostart);
@@ -1271,6 +1274,13 @@ fun solve_pure (iostart:iostate, iofinish:iostate):iostate list =
   in
     map (state_to_iostate) (sol)
   end;
+
+val last3mask = pos3w1mask + pos4w1mask + pos5w1mask;
+
+fun last3t1 (s:state):Word64.word =
+  (* Return the last three cars on track 1.  Used to construct the
+   intermediate node used in solve. *)
+  Word64.andb(s, last3mask);
 
 fun solve (iostart:iostate, iofinish:iostate):iostate list =
   (* Find a solution that is join of two minimal solutions from the start
@@ -1299,7 +1309,7 @@ fun solve (iostart:iostate, iofinish:iostate):iostate list =
   end;
 
 fun generate_problem (0) = print "\n\nDone!\n"
-  (* Randomly generate n puzzle problems and solve them *)
+  (* Generate n random standard puzzle problems and solve them *)
   | generate_problem (n) =
     let
       val perm = rnd_permu([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -1311,7 +1321,9 @@ fun generate_problem (0) = print "\n\nDone!\n"
       generate_problem(n-1)
    end;
 
+
 fun gpf1 (0, out_stream) =
+  (* Helper function for generate_problem_file *)
       (
         TextIO.closeOut(out_stream);
         print "\nDone!\n"
@@ -1340,7 +1352,15 @@ fun generate_problem_file(n, out_file) =
 
 (*------------------------------------------------------------------------*)
 (* Functions to read permutations from a file and solve the related
-   problems, printing the number of moves to an output file *)
+   problems, printing the number of moves to an output file.
+   For compatibilty with a Prolog input file, each line is ended
+   with a period:
+   
+      [1,3,2,5,6,8,7,4].
+      [7,8,6,5,1,2,3,4].
+      etc.
+*)
+
 fun stil ([]) = [] : int list
   | stil (h::t : string list) =
       case h of
@@ -1401,10 +1421,14 @@ fun main () =
 
 (* For compilation of a stand-alone program to read a file of
    permutations and save the number of moves for each in a file *)
+(*
 fun main () =
   read_permutations("perms.txt", "num-moves.txt");
+*)
 
-(* For compilation with mlton, the next line must be un-commented *)
+(* For compilation with mlton, the next line must be un-commented. 
+   it is not needed for compilation with polyc *)
 (*
 main ();
 *)
+
