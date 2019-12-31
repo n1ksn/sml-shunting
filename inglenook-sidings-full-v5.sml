@@ -1,18 +1,18 @@
 (*-------------------------------------------------------------------------
   inglenook-sidings-full-v5.sml
- 
+
   Find solutions to a classic shunting (switching) puzzle using Standard
-  ML.  
- 
+  ML.
+
   Andrew Palm
   2019-12-29
- 
+
   Quick start
   -----------
   The Inglenook Sidings shunting puzzle uses the following track
   configuration with fixed track capacities. Note how the switching
   lead track (head shunt) is limited to the engine plus three cars.
- 
+
                                     /------------- 3
                                    /    3 cars
      West                         /
@@ -21,17 +21,17 @@
          (Head Shunt)          /
     0  -----------------------/---------------------  1
          Engine + 3 cars                5 cars
- 
+
   For input and output the tracks are represented by lists containing
   the occupying cars in the order from west to east.
- 
+
   The cars are represented by any integers between 1 and 15.  The engine
   is always represented by zero.  There must be a maximum of eight cars.
 
   The engine is assumed to be on the west end of all movements.  The
   engine must be on the west end of track 0 in the start and end
   conditions (states).
- 
+
   To run this program interactively, start a Standard ML session and
   at the prompt enter (note the semicolon at the end):
 
@@ -40,26 +40,26 @@
   (assuming you are in the folder/directory where the code file resides).
   If there are no errors you will get another prompt after a listing of
   the program components.  Run a test by entering:
- 
+
       generate_problem(1);
- 
+
   You should get a printout showing
- 
+
       1.  The "start state" at the beginning of the puzzle with the engine
           "0" on the switching lead (track 0), five cars on track 1,
           three cars on track 2, and no cars on track 3.  The cars are
           in a random order.
- 
+
       2.  The number of engine moves (pulls or drops) to the "end state".
- 
+
       3.  A list of the intermediate states of the "solution path" which
           shows the car positions between the engine moves.  The cars in
           the end state are in numerical order, five on track 1 and three
           on track 2.
- 
+
   To exit Standard ML enter <cntl>+d (hold down the control key and hit
-  the "d" key.  
- 
+  the "d" key.
+
   Standard problems
   -----------------
   At the start there are five cars on track 1 representing an arriving
@@ -70,31 +70,31 @@
   are distributed so that track 1 contains cars 1, 2, 3, 4, and 5 in
   that order from west to east, and similarly cars 6, 7, and 8 are on
   track 2 in order from west to east.
- 
+
     Start:  Track 0: engine
             Track 1: 3, 2, 7, 5, 1
             Track 2: 4, 8, 6
             Track 3: empty
     State:  ([e], [3, 2, 7, 5, 1], [4, 8, 6], [])
- 
+
     End:    Track 0: engine
             Track 1: 1, 2, 3, 4, 5
             Track 2: 6, 7, 8
             Track 3: empty
     State:  ([e], [1, 2, 3, 4, 5], [6, 7, 8],[])
- 
+
   The following entry finds a solution to this problem:
- 
+
     solve(([0],[3,2,7,5,1],[4,8,6],[]),([0],[1,2,3,4,5],[6,7,8],[]));
- 
-  The output may be abbreviated and inconvenient to read, so 
+
+  The output may be abbreviated and inconvenient to read, so
   immediately after the last entry, type in the following:
 
     print_solution(it);
 
   ("it" is the generic name for the output of the previously run
   function).  You should get the output:
- 
+
   Moves: 14
   Solution:
   ([0],[3,2,7,5,1],[4,8,6],[])
@@ -112,21 +112,21 @@
   ([0],[1,2,3,4,5],[8],[6,7])
   ([0,6,7],[1,2,3,4,5],[8],[])
   ([0],[1,2,3,4,5],[6,7,8],[])
- 
+
   For the convenience of the user there are two functions which
   generate one or more standard problems and find the solutions.
- 
+
     generate_problem(n).  Generates N standard problems and finds a
     solution for each using the predicate solve where n is a positive
     integer.
- 
+
     generate_problem_file(n, "out_file").  Like generate_problem, but
     writes the solution(s) to a file named out_file.
- 
+
   Here is an example of generating a single standard problem:
- 
+
   ?- generate_problem(1);
- 
+
   Start state: ([0],[6,2,8,1,4],[7,5,3],[])
   Moves: 18
   Solution:
@@ -149,21 +149,21 @@
   ([0,6,1,2],[3,4,5],[7,8],[])
   ([0,6],[1,2,3,4,5],[7,8],[])
   ([0],[1,2,3,4,5],[6,7,8],[])
-  
+
   Non-standard problems
   ---------------------
   Non-standard start or end states can be used with the predicate
   "solve" as long as the engine is on the west (bumper) end of track 0.
   This may be useful if the user models specific industries on the
   sidings.  A maximum of eight cars still applies.
- 
+
   Care must be taken to ensure that the number of cars and their labels
   are identical in the start and end states and that there are no
-  duplicate car labels.  
+  duplicate car labels.
 
   A non-standard problem with six cars plus a transfer caboose "15" (and
   the engine named "0"):
- 
+
     solve(([0,15],[3,2,7,5],[4,6],[]), ([0],[6,4,15],[2,3],[5,7]));
 
   followed by:
@@ -171,7 +171,7 @@
     print_solution(it);
 
   results in the output:
- 
+
   Moves: 17
   Solution:
   ([0,15],[3,2,7,5],[4,6],[])
@@ -192,8 +192,8 @@
   ([0,5,7,2],[6,4,15],[3],[])
   ([0,5,7],[6,4,15],[2,3],[])
   ([0],[6,4,15],[2,3],[5,7])
- 
-  This is not the shortest solution possible!  See the notes below.  
+
+  This is not the shortest solution possible!  See the notes below.
 
   Notes on solutions
   ------------------
@@ -204,7 +204,7 @@
   "solve" function uses a "trick."  It breaks the solution
   into two pieces connected by an intermediate state.  This intermediate
   state is chosen so the combined solution is of reasonable length and
-  takes at worst a few minutes to calculate.  
+  takes at worst a few minutes to calculate.
 
   Sometimes a shorter solution can be found by interchanging the start
   and end states.  Since all the engine moves can be reversed, one can
@@ -237,7 +237,7 @@
   ([0],[2,7,5],[4,6],[15,3])
   ([0,15,3],[2,7,5],[4,6],[])
   ([0,15],[3,2,7,5],[4,6],[])
-  
+
   This is three moves shorter than the first solution found, although
   typically the "reverse" solution is not necessarily shorter, let
   alone three moves shorter.
@@ -245,9 +245,9 @@
   An interested user can try to find an optimal minimal length solution
   by using the "solve_pure" function, preferably on a problem
   with a known solution of 12 or fewer moves.  Here is an example:
- 
+
     solve_pure(([0],[6,7,1,5,2],[3,4,8],[]),([0],[1,2,3,4,5],[6,7,8],[]));
- 
+
   followed by:
 
     print_solution(it);
@@ -268,13 +268,13 @@
   ([0],[1,2,3,4,5],[8],[6,7])
   ([0,6,7],[1,2,3,4,5],[8],[])
   ([0],[1,2,3,4,5],[6,7,8],[])
- 
+
   No other solution to this problem has fewer moves than this solution.
   If we use the solve function on this problem we get a solution which
   is just two moves longer:
- 
+
     solve(([0],[6,7,1,5,2],[3,4,8],[]),([0],[1,2,3,4,5],[6,7,8],[]));
- 
+
     print_solution(it);
 
   Moves: 13
@@ -299,21 +299,21 @@
   -----------------
   Version 4b is the same as version 4 except for added functions which
   read permutations of [1,2,3,4,5,6,7,8] from a file and print the
-  number of moves in a solution in another file.  
- 
+  number of moves in a solution in another file.
+
   In version 4 the internal representation of puzzle states has been
   changed to a single 64-bit word.  The previous state data structure
   is retained for input and output, named "iostate".  This change
   noticably increased the speed of the iterative deepening depth-first
   search for solutions.
- 
+
   In version 3 the function generate_problem_file has been added.
- 
+
   Functions in version 2 have been modified from version 1 so that
   printing is separated from the solve functions.
 
   Version 1 was based on a Prolog program.
- 
+
  ------------------------------------------------------------------------*)
 (* Bring in utilities using randomness *)
 (* The following function urandomlist is taken from Rosetta Code.
@@ -359,7 +359,7 @@ fun get_real_seed () =
 fun remove_at ([], n) = []  (* n is list index starting at 0 *)
   | remove_at (l, n) = List.take(l, n) @ List.drop(l, n+1);
 
-local 
+local
   fun rs1 ([], url) = []
     | rs1 (l, []) = []
     | rs1 (l, url) =
@@ -551,22 +551,23 @@ fun state_to_iostate (s:state):iostate =
 
 (*------------------------------------------------------------------------*)
 (* For printing a state and puzzle solution (a list of states) *)
-fun ilts1 (l:int list, acc:string) =
- (* Helper function for int_list_to_string *)
- if (l = []) then
-  (
-    if acc = "[" then "[]" (* l is nil on first call *)
-    else String.concat [acc, "]"] (* l is nil on last recursive call *)
-  )
-  else
-  (
-    if acc = "[" then
-      ilts1(tl(l), (String.concat [acc, Int.toString(hd(l))]))
+local
+  fun ilts1 (l:int list, acc:string) =
+    if (l = []) then
+    (
+      if acc = "[" then "[]" (* l is nil on first call *)
+      else String.concat [acc, "]"] (* l is nil on last recursive call *)
+    )
     else
-      ilts1(tl(l), (String.concat [acc, ",", Int.toString(hd(l))]))
-  );
-
-fun int_list_to_string (l:int list):string = ilts1(l, "[");
+    (
+      if acc = "[" then
+        ilts1(tl(l), (String.concat [acc, Int.toString(hd(l))]))
+      else
+        ilts1(tl(l), (String.concat [acc, ",", Int.toString(hd(l))]))
+    );
+in
+  fun int_list_to_string (l:int list):string = ilts1(l, "[");
+end;
 
 fun print_int_list (l:int list) =
   print (int_list_to_string l);
@@ -1352,11 +1353,54 @@ end;
    problems, printing the number of moves to an output file.
    For compatibilty with a Prolog input file, each line is ended
    with a period:
-   
+
       [1,3,2,5,6,8,7,4].
       [7,8,6,5,1,2,3,4].
       etc.
 *)
+
+local
+  fun next (xlist, []) : int list = xlist
+    | next (xlist, y::ys) =
+    if hd xlist <= y then next(y::xlist, ys)
+    else (* Swap y with greatest xk such that x >= xk > y *)
+      let fun swap [x] = y::x::ys
+            | swap (x::xk::xs) =
+                if xk > y then x::swap(xk::xs)      (* x >= xk  *)
+                          else (y::xk::xs)@(x::ys)  (* x > y >= xk >= xs *)
+      in
+        swap(xlist)
+      end;
+in
+  fun next_perm (l:int list) =
+    let
+      val revl = List.rev l;
+      val y = hd revl;
+      val ys = tl revl
+    in
+      List.rev(next([y], ys))
+    end;
+end;
+
+(* This function prepares a file containing all permutations of the
+   list [1,2,3,4,5,6,7,8].  Subsets of this file are used to feed
+   the function read_permutations when investigating solutions. *)
+fun write_perms_file (out_file) =
+  let
+    val out_stream = TextIO.openAppend(out_file);
+    val n = ref 40320;
+    val l = ref [1, 2, 3, 4, 5, 6, 7, 8]
+  in
+    while (!n > 0) do
+    (
+      print_int_list_file(out_stream, !l);
+      TextIO.output (out_stream, ".\n");
+      l := next_perm(!l);
+      n := !n - 1
+    );
+    TextIO.closeOut(out_stream);
+    print "\nDone!\n"
+  end;
 
 local
   fun stil ([]) = [] : int list
@@ -1425,7 +1469,7 @@ fun main () =
   read_permutations("perms.txt", "num-moves.txt");
 *)
 
-(* For compilation with mlton, the next line must be un-commented. 
+(* For compilation with mlton, the next line must be un-commented.
    it is not needed for compilation with polyc *)
 (*
 main ();
