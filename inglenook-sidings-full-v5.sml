@@ -297,6 +297,12 @@
 
   Development Notes
   -----------------
+  Version 5 has some simple refactoring of functions that make use of a
+  helper function, making the helper functions local.  Also, the function
+  write_perms_file has been added to create a file of all permutations
+  of [1,2,3,4,5,6,7,8], subsets of which can be used in conjunction with
+  batch processing of solutions.
+
   Version 4b is the same as version 4 except for added functions which
   read permutations of [1,2,3,4,5,6,7,8] from a file and print the
   number of moves in a solution in another file.
