@@ -1,6 +1,13 @@
-(*------------------------------------------------------------------------*)
-(*                                                                        *)
-(*------------------------------------------------------------------------*)
+(*------------------------------------------------------------------------
+  inglenook-sidings-small-v0.sml
+
+  Find solutions to the small version of the Inglenook Sidings shunting
+  puzzle.
+
+  Andrew Palm
+  2020-01-04
+
+--------------------------------------------------------------------------*)
 (* Utilities using randomness *)
 (* The following function urandomlist is taken from Rosetta Code.
    Given a real seed and integer n, return a list of n random reals

@@ -137,7 +137,7 @@
 
   Here is an example of generating a single standard problem:
 
-  ?- generate_problem(1);
+    generate_problem(1);
 
   Start state: ([0],[6,2,8,1,4],[7,5,3],[])
   Moves: 18
