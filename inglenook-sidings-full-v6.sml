@@ -406,14 +406,14 @@ val store =  ref (0.0,0.0);
 val rec u =  fn S => fn 0 => [] |
   n=> (store:=uniformdeviate S; (#1 (!store)):: (u (#2 (!store)) (n-1))) ;
 in
-  u seed n
+  tl(u seed (n+1))
 end;
 
 fun get_real_seed () =
   (* Return a real random seed based on system time *)
   let
-    val t = Time.toMilliseconds(Time.now());
-    val s = Int.fromLarge(t mod 100000);
+    val t = Time.toMicroseconds(Time.now());
+    val s = Int.fromLarge(t mod 1000000);
   in
     Real.fromInt(s)
   end;
